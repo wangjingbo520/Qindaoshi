@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -48,6 +49,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (SPUtils.getString(Constans.phone) != null) {
+            if (!TextUtils.isEmpty(SPUtils.getString(Constans.phone))) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            }
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvLogin:
@@ -88,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String data = response.body().string();
+                    Log.i("----->", data);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -129,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.showMessage("登录失败，请重新登录");
+                        ToastUtil.showMessage("登录异常，请重新登录");
                     }
                 });
             }
@@ -140,17 +153,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     String data = response.body().string();
                     Log.i("------->", data);
                     try {
-                        JSONObject jsonObject = new JSONObject(data);
+                        JSONObject jo = new JSONObject(data);
+                        final String message = jo.getString("message");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.showMessage(message);
+                            }
+                        });
+
+                        JSONObject jsonObject = jo.getJSONObject("data");
+                        int roleType = jsonObject.getInt("roleType");
+                        if (1 == roleType) {
+                            String roleNick = jsonObject.getString("nick");
+                            String phone = jsonObject.getString("phone");
+                            SPUtils.putInt(Constans.roleType, roleType);
+                            SPUtils.putString(Constans.roleNick, roleNick);
+                            SPUtils.putString(Constans.phone, phone);
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            ToastUtil.showMessage("不好意思，您不是回收人员，无法登陆");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ToastUtil.showMessage("登录成功");
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        }
-                    });
+
                 }
             }
         });

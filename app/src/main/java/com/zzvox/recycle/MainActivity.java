@@ -1,23 +1,25 @@
 package com.zzvox.recycle;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.zzvox.recycle.util.Constans;
 import com.zzvox.recycle.zxing.android.CaptureActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String DECODED_CONTENT_KEY = "codedContent";
-    private static final String DECODED_BITMAP_KEY = "codedBitmap";
     private static final int REQUEST_CODE_SCAN = 0x0000;
 
     @Override
@@ -32,7 +34,13 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     goScan();
                 }
-                //   startActivity(new Intent(MainActivity.this, AuthorizationActivity.class));
+            }
+        });
+
+        findViewById(R.id.tvExit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEixtDialog();
             }
         });
     }
@@ -59,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -70,8 +77,34 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AuthorizationActivity.class);
                 intent.putExtra("deviceCode", deviceCode);
                 startActivity(intent);
-                finish();
             }
         }
+    }
+
+
+    public void showEixtDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("您确认要退出吗？");
+        builder.setIcon(R.mipmap.touxiang);
+        builder.setCancelable(false);
+        //正面的按钮
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SPUtils.putString(Constans.roleType, null);
+                SPUtils.putString(Constans.phone, null);
+                SPUtils.putString(Constans.roleNick, null);
+                dialog.dismiss();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
+        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 }

@@ -57,18 +57,20 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="15565654567"
+                android:text=""
                 android:textColor="#333333"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/tvPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="15565654567"
+                android:text=""
                 android:textColor="#333333"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -95,11 +97,12 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/tvDeviceCode"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:gravity="center"
-            android:text="075500001"
+            android:text=""
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
