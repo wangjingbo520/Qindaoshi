@@ -17,6 +17,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    signingConfigs {
+        commonConfig {
+            keyAlias 'Qingdaoshi'
+            keyPassword '123456'
+            storeFile file('Qingdaoshi.jks')
+            storePassword '123456'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.commonConfig
+        }
+        debug {
+            signingConfig signingConfigs.commonConfig
+        }
+    }
 }
 
 dependencies {

@@ -81,8 +81,6 @@ public class AuthorizationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String data = response.body().string();
-                    Log.i("------->", data);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

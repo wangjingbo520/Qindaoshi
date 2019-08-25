@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void showEixtDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示");
