@@ -196,6 +196,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 case 1:
                     ToastUtil.showMessage("不好意思，您不是回收人员，无法登陆");
+                     break;
                 case 2:
                     String message = (String) msg.obj;
                     ToastUtil.showMessage(message);
