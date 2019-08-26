@@ -155,33 +155,65 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     try {
                         JSONObject jo = new JSONObject(data);
                         final String message = jo.getString("message");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtil.showMessage(message);
+                        String code = jo.getString("code");
+                        String errorCode = "验证码错误";
+                        if ("success".equals(code) && !isChinese(message) && !errorCode.equals(message)) {
+                            JSONObject jsonObject = jo.getJSONObject("data");
+                            int roleType = jsonObject.getInt("roleType");
+                            if (1 == roleType) {
+                                String roleNick = jsonObject.getString("nick");
+                                String phone = jsonObject.getString("phone");
+                                SPUtils.putInt(Constans.roleType, roleType);
+                                SPUtils.putString(Constans.roleNick, roleNick);
+                                SPUtils.putString(Constans.phone, phone);
+                                mHandler.sendEmptyMessage(0);
+                            } else {
+                                mHandler.sendEmptyMessage(1);
                             }
-                        });
-
-                        JSONObject jsonObject = jo.getJSONObject("data");
-                        int roleType = jsonObject.getInt("roleType");
-                        if (1 == roleType) {
-                            String roleNick = jsonObject.getString("nick");
-                            String phone = jsonObject.getString("phone");
-                            SPUtils.putInt(Constans.roleType, roleType);
-                            SPUtils.putString(Constans.roleNick, roleNick);
-                            SPUtils.putString(Constans.phone, phone);
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            finish();
                         } else {
-                            ToastUtil.showMessage("不好意思，您不是回收人员，无法登陆");
+                            Message tempMsg = mHandler.obtainMessage();
+                            tempMsg.what = 2;
+                            tempMsg.obj = message;
+                            mHandler.sendMessage(tempMsg);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         });
+    }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    ToastUtil.showMessage("登录成功");
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                    break;
+                case 1:
+                    ToastUtil.showMessage("不好意思，您不是回收人员，无法登陆");
+                case 2:
+                    String message = (String) msg.obj;
+                    ToastUtil.showMessage(message);
+                default:
+                    break;
+            }
+        }
+    };
+    
+    public static boolean isChinese(String string) {
+        int n = 0;
+        for (int i = 0; i < string.length(); i++) {
+            n = (int) string.charAt(i);
+            if (!(19968 <= n && n < 40869)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     CountDownTimer timer = new CountDownTimer(60000, 1000) {
