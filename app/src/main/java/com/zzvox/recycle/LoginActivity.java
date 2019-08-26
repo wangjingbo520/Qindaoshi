@@ -168,6 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 SPUtils.putInt(Constans.roleType, roleType);
                                 SPUtils.putString(Constans.roleNick, roleNick);
                                 SPUtils.putString(Constans.phone, phone);
+                                SPUtils.putString(Constans.token,message);
                                 mHandler.sendEmptyMessage(0);
                             } else {
                                 mHandler.sendEmptyMessage(1);

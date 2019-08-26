@@ -63,8 +63,10 @@ public class AuthorizationActivity extends AppCompatActivity {
     private void commit() {
         HttpUrl.Builder builder = HttpUrl.parse(Constans.SET_NAME).newBuilder();
         builder.addQueryParameter("name", deviceCode);
+        String Authorization = SPUtils.getString(Constans.token);
         final Request request = new Request.Builder()
                 .url(builder.build())
+                .addHeader("Authorization", Authorization)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
@@ -81,6 +83,8 @@ public class AuthorizationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    String msg = response.body().string();
+                    Log.i("----->", msg);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

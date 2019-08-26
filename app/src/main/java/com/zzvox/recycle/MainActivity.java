@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 SPUtils.putString(Constans.roleType, null);
                 SPUtils.putString(Constans.phone, null);
                 SPUtils.putString(Constans.roleNick, null);
+                SPUtils.putString(Constans.token, null);
                 dialog.dismiss();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();

@@ -11,4 +11,5 @@ public class Constans {
     public static final String roleType ="ROLE_TYPE";
     public static final String roleNick ="ROLE_NICK";
     public static final String phone = "PHONE";
+    public static final String token = "TOKEN";
 }
