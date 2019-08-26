@@ -3,6 +3,8 @@ package com.zzvox.recycle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.JsonReader;
@@ -76,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void getCode() {
         String userName = etName.getText().toString().trim();
         if (TextUtils.isEmpty(userName)) {
-            ToastUtil.showMessage("请先输入用户名");
+            ToastUtil.showMessage("请先输入用户账号");
             return;
         }
         HttpUrl.Builder builder = HttpUrl.parse(Constans.url + Constans.GET_CODE).newBuilder();
@@ -156,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         JSONObject jo = new JSONObject(data);
                         final String message = jo.getString("message");
                         String code = jo.getString("code");
-                        String errorCode = "验证码错误";
+                        String errorCode = "短信验证码不正确";
                         if ("success".equals(code) && !isChinese(message) && !errorCode.equals(message)) {
                             JSONObject jsonObject = jo.getJSONObject("data");
                             int roleType = jsonObject.getInt("roleType");
@@ -196,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 case 1:
                     ToastUtil.showMessage("不好意思，您不是回收人员，无法登陆");
-                     break;
+                    break;
                 case 2:
                     String message = (String) msg.obj;
                     ToastUtil.showMessage(message);
@@ -205,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     };
-    
+
     public static boolean isChinese(String string) {
         int n = 0;
         for (int i = 0; i < string.length(); i++) {
